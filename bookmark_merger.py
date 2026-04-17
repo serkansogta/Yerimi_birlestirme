@@ -3,17 +3,39 @@
 
 import argparse
 import logging
+import os
 import sys
 from pathlib import Path
 
 import readers
 import writer
 
+# Her tarayıcı için (linux_pattern, windows_pattern, görünen_ad, okuyucu)
+_LINUX = 0
+_WINDOWS = 1
+
 BROWSER_REGISTRY = {
-    "chrome":  (".config/google-chrome/Default/Bookmarks",  "Chrome",  readers.read_chromium),
-    "edge":    (".config/microsoft-edge/Default/Bookmarks", "Edge",    readers.read_chromium),
-    "firefox": (".mozilla/firefox/*.default*/places.sqlite", "Firefox", readers.read_firefox),
+    "chrome": (
+        ".config/google-chrome/Default/Bookmarks",
+        "AppData/Local/Google/Chrome/User Data/Default/Bookmarks",
+        "Chrome",
+        readers.read_chromium,
+    ),
+    "edge": (
+        ".config/microsoft-edge/Default/Bookmarks",
+        "AppData/Local/Microsoft/Edge/User Data/Default/Bookmarks",
+        "Edge",
+        readers.read_chromium,
+    ),
+    "firefox": (
+        ".mozilla/firefox/*.default*/places.sqlite",
+        "AppData/Roaming/Mozilla/Firefox/Profiles/*.default*/places.sqlite",
+        "Firefox",
+        readers.read_firefox,
+    ),
 }
+
+_IS_WINDOWS = sys.platform == "win32"
 
 
 def _find_path(rel_pattern: str) -> Path | None:
@@ -26,7 +48,8 @@ def _find_path(rel_pattern: str) -> Path | None:
 
 
 def _load_browser(key: str) -> list:
-    rel_pattern, display_name, reader_fn = BROWSER_REGISTRY[key]
+    linux_pattern, win_pattern, display_name, reader_fn = BROWSER_REGISTRY[key]
+    rel_pattern = win_pattern if _IS_WINDOWS else linux_pattern
     path = _find_path(rel_pattern)
     if path is None:
         logging.info("%s: profil bulunamadı, atlanıyor", display_name)

@@ -6,13 +6,20 @@ Chrome, Edge ve Firefox tarayıcılarındaki yer imlerini okuyup tek bir HTML do
 
 - Python 3.10 veya üzeri
 - Ek paket gerekmez (yalnızca Python standart kütüphanesi kullanılır)
+- **Linux ve Windows 11** desteklenir (işletim sistemi otomatik algılanır)
 
 ## Kullanım
 
 ### Temel kullanım
 
+**Linux / macOS:**
 ```bash
 python3 bookmark_merger.py
+```
+
+**Windows 11:**
+```powershell
+python bookmark_merger.py
 ```
 
 Tüm tespit edilen tarayıcıların yer imlerini birleştirir ve `bookmarks_merged.html` dosyasını oluşturur.
@@ -42,15 +49,15 @@ python3 bookmark_merger.py --no-dedup
 python3 bookmark_merger.py --verbose
 ```
 
-## Tarayıcı Profil Konumları (Linux)
+## Tarayıcı Profil Konumları
 
-Araç bu konumlara otomatik olarak bakar:
+Araç işletim sistemini otomatik algılayarak doğru konuma bakar:
 
-| Tarayıcı | Konum |
-|---|---|
-| Chrome | `~/.config/google-chrome/Default/Bookmarks` |
-| Edge | `~/.config/microsoft-edge/Default/Bookmarks` |
-| Firefox | `~/.mozilla/firefox/*.default*/places.sqlite` |
+| Tarayıcı | Linux | Windows 11 |
+|---|---|---|
+| Chrome | `~/.config/google-chrome/Default/Bookmarks` | `%LOCALAPPDATA%\Google\Chrome\User Data\Default\Bookmarks` |
+| Edge | `~/.config/microsoft-edge/Default/Bookmarks` | `%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Bookmarks` |
+| Firefox | `~/.mozilla/firefox/*.default*/places.sqlite` | `%APPDATA%\Mozilla\Firefox\Profiles\*.default*\places.sqlite` |
 
 Tarayıcı kurulu değilse veya profil bulunamazsa o tarayıcı atlanır, hata verilmez.
 
